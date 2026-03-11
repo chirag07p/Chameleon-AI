@@ -188,9 +188,70 @@
         font-size: 0.78rem;
         color: #9ca3af;
       }
+      /* Ad Creator Styles */
+      .ad-creator-section {
+        margin-top: 1.5rem;
+        padding: 1.25rem;
+        border-radius: 14px;
+        background: rgba(15, 23, 42, 0.6);
+        border: 1px solid rgba(148, 163, 184, 0.3);
+      }
+      .ad-creator-title {
+        font-size: 1.15rem;
+        margin: 0 0 0.5rem;
+        color: #e5e7eb;
+      }
+      .ad-creator-desc {
+        font-size: 0.85rem;
+        color: #9ca3af;
+        margin: 0 0 1rem;
+      }
+      .ad-creator-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+      }
+      .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+      .form-field label {
+        font-size: 0.75rem;
+        color: #9ca3af;
+        font-weight: 500;
+      }
+      .form-field input,
+      .form-field textarea {
+        padding: 0.5rem 0.65rem;
+        border-radius: 8px;
+        border: 1px solid rgba(148, 163, 184, 0.5);
+        background: rgba(2, 6, 23, 0.9);
+        color: #e5e7eb;
+        font-family: inherit;
+        font-size: 0.8rem;
+      }
+      .form-field input:focus,
+      .form-field textarea:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+      }
+      .form-field textarea {
+        resize: vertical;
+        min-height: 50px;
+      }
       @media (max-width: 900px) {
         .layout {
           grid-template-columns: minmax(0, 1fr);
+        }
+        .form-row {
+          grid-template-columns: 1fr;
         }
       }
     </style>
@@ -230,7 +291,7 @@
               design to place relevant creatives.
             </p>
             <p>
-              Chameleon‑style native units don’t scream for attention. They
+              Chameleon‑style native units don�t scream for attention. They
               quietly blend into typography, color, and layout so that users
               experience them as part of the story, not a distraction. The
               result: higher click‑through rates, stronger trust, and far better
@@ -244,6 +305,7 @@
             id="chameleon-ad"
             aria-label="Chameleon AI contextual ad"
           >
+            <img src="logo.png" alt="Logo" class="ad-logo" id="ad-logo" style="height:24px;margin-bottom:0.5rem;display:block;" />
             <div class="badge">Chameleon AI</div>
             <h3>Contextual ads that blend in, not stick out.</h3>
             <p>
@@ -258,9 +320,45 @@
       <p class="hint">
         Switch between <strong>News blog (light)</strong> and
         <strong>Tech article (dark)</strong> above. The ad on the right
-        automatically restyles itself to match the host content’s theme,
-        simulating Chameleon AI’s visual camouflage.
+        automatically restyles itself to match the host content's theme,
+        simulating Chameleon AI's visual camouflage.
       </p>
+
+      <!-- Ad Creator Section -->
+      <div class="ad-creator-section">
+        <h2 class="ad-creator-title">Create Your Own Ad</h2>
+        <p class="ad-creator-desc">
+          Design a contextual ad that automatically adapts to match any website's 
+          native look and feel.
+        </p>
+        
+        <div class="ad-creator-form">
+          <div class="form-row">
+            <div class="form-field">
+              <label for="mvp-headline">Headline</label>
+              <input type="text" id="mvp-headline" placeholder="Your headline" value="Contextual ads that blend in, not stick out." />
+            </div>
+            <div class="form-field">
+              <label for="mvp-brand">Brand Name</label>
+              <input type="text" id="mvp-brand" placeholder="Your brand" value="Chameleon AI" />
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="mvp-description">Description</label>
+            <textarea id="mvp-description" rows="2" placeholder="Describe your product...">Drop‑in script. Real‑time page analysis. Ads that automatically match fonts, colors, and layout—no cookies needed.</textarea>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label for="mvp-cta">CTA Button</label>
+              <input type="text" id="mvp-cta" placeholder="Button text" value="See how it works" />
+            </div>
+            <div class="form-field">
+              <label for="mvp-logo">Logo URL</label>
+              <input type="url" id="mvp-logo" placeholder="https://example.com/logo.png" />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script>
@@ -334,10 +432,59 @@
           });
         }
 
+        // Ad Creator form handling
+        const headlineInput = document.getElementById("mvp-headline");
+        const brandInput = document.getElementById("mvp-brand");
+        const descInput = document.getElementById("mvp-description");
+        const ctaInput = document.getElementById("mvp-cta");
+        const logoInput = document.getElementById("mvp-logo");
+        const adElement = document.getElementById("chameleon-ad");
+        const adLogo = document.getElementById("ad-logo");
+
+        if (headlineInput && adElement) {
+          headlineInput.addEventListener("input", (e) => {
+            const h3 = adElement.querySelector("h3");
+            if (h3) h3.textContent = e.target.value || "Your headline";
+          });
+        }
+
+        if (brandInput && adElement) {
+          brandInput.addEventListener("input", (e) => {
+            const badge = adElement.querySelector(".badge");
+            if (badge) badge.textContent = e.target.value || "Ad";
+          });
+        }
+
+        if (descInput && adElement) {
+          descInput.addEventListener("input", (e) => {
+            const p = adElement.querySelector("p");
+            if (p) p.textContent = e.target.value || "Your description";
+          });
+        }
+
+        if (ctaInput && adElement) {
+          ctaInput.addEventListener("input", (e) => {
+            const btn = adElement.querySelector("button");
+            if (btn) btn.textContent = e.target.value || "Learn More";
+          });
+        }
+
+        if (logoInput && adLogo) {
+          logoInput.addEventListener("input", (e) => {
+            const url = e.target.value.trim();
+            if (url) {
+              adLogo.src = url;
+              adLogo.style.display = "block";
+            } else {
+              adLogo.src = "logo.png";
+              adLogo.style.display = "block";
+            }
+          });
+        }
+
         applyChameleonStyles();
       });
     </script>
   </body>
-  </html>
-
+</html>
 
