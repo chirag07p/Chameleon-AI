@@ -30,6 +30,7 @@
           <a href="#customers">Customers</a>
           <a href="#competitors">Market</a>
           <a href="#financials">Financials</a>
+          <a href="#ad-creator">Ad Creator</a>
         </nav>
         <a href="#contact" class="btn btn-sm btn-outline">Request Service</a>
         <button class="nav-toggle" aria-label="Toggle navigation">
@@ -416,6 +417,88 @@
                 transparency and brand controls.
               </li>
             </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="ad-creator">
+        <div class="container two-col">
+          <div>
+            <h2>Create Your Own Ad</h2>
+            <p>
+              Design a contextual ad that automatically adapts to match any website's 
+              native look and feel. Fill in the details below and see how your ad 
+              would appear in different themes.
+            </p>
+            <form class="card ad-creator-form" id="ad-creator-form">
+              <div class="field">
+                <label for="ad-headline">Headline</label>
+                <input 
+                  id="ad-headline" 
+                  type="text" 
+                  placeholder="e.g., Boost Your ROI with Native Ads" 
+                  value="Contextual ads that blend in, not stick out."
+                />
+              </div>
+              <div class="field">
+                <label for="ad-description">Description</label>
+                <textarea 
+                  id="ad-description" 
+                  rows="3" 
+                  placeholder="Describe your product or service..."
+                >Drop‑in script. Real‑time page analysis. Ads that automatically match fonts, colors, and layout—no cookies needed.</textarea>
+              </div>
+              <div class="field">
+                <label for="ad-cta">CTA Button Text</label>
+                <input 
+                  id="ad-cta" 
+                  type="text" 
+                  placeholder="e.g., Get Started" 
+                  value="See how it works"
+                />
+              </div>
+              <div class="field">
+                <label for="ad-brand">Brand Name</label>
+                <input 
+                  id="ad-brand" 
+                  type="text" 
+                  placeholder="Your company name" 
+                  value="Chameleon AI"
+                />
+              </div>
+              <div class="field">
+                <label for="ad-logo">Brand Logo URL</label>
+                <input 
+                  id="ad-logo" 
+                  type="url" 
+                  placeholder="https://example.com/logo.png"
+                />
+                <span class="field-hint">Enter a URL to your logo image</span>
+              </div>
+              <div class="field">
+                <label>Preview Theme</label>
+                <div class="theme-selector">
+                  <button type="button" class="theme-btn active" data-theme="light">Light Theme</button>
+                  <button type="button" class="theme-btn" data-theme="dark">Dark Theme</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="ad-preview-container">
+            <h3>Live Preview</h3>
+            <div class="ad-preview-wrapper">
+              <div class="ad-preview" id="ad-preview">
+                <img src="logo.png" alt="Logo" class="preview-logo" id="preview-logo" />
+                <div class="preview-badge">Ad</div>
+                <h3 class="preview-headline" id="preview-headline">Contextual ads that blend in, not stick out.</h3>
+                <p class="preview-description" id="preview-description">Drop‑in script. Real‑time page analysis. Ads that automatically match fonts, colors, and layout—no cookies needed.</p>
+                <button type="button" class="preview-cta" id="preview-cta">See how it works</button>
+              </div>
+            </div>
+            <p class="preview-note">
+              Your ad automatically adapts to match the host website's colors, 
+              fonts, and layout—just like the preview above.
+            </p>
           </div>
         </div>
       </section>
