@@ -71,6 +71,105 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     });
   }
-});
 
+  // Ad Creator functionality
+  const adForm = document.getElementById("ad-creator-form");
+  const adPreview = document.getElementById("ad-preview");
+  const adPreviewWrapper = document.querySelector(".ad-preview-wrapper");
+  const previewHeadline = document.getElementById("preview-headline");
+  const previewDescription = document.getElementById("preview-description");
+  const previewCta = document.getElementById("preview-cta");
+  const themeButtons = document.querySelectorAll(".theme-btn");
+  
+  let currentTheme = "light";
+
+  // Initialize with default values
+  if (adPreview && adPreviewWrapper) {
+    updatePreviewTheme(currentTheme);
+  }
+
+  // Form field event listeners for real-time preview
+  if (adForm) {
+    const headlineInput = document.getElementById("ad-headline");
+    const descriptionInput = document.getElementById("ad-description");
+    const ctaInput = document.getElementById("ad-cta");
+    const brandInput = document.getElementById("ad-brand");
+    const logoInput = document.getElementById("ad-logo");
+    const previewLogo = document.getElementById("preview-logo");
+
+    if (headlineInput) {
+      headlineInput.addEventListener("input", (e) => {
+        if (previewHeadline) {
+          previewHeadline.textContent = e.target.value || "Your headline here";
+        }
+      });
+    }
+
+    if (descriptionInput) {
+      descriptionInput.addEventListener("input", (e) => {
+        if (previewDescription) {
+          previewDescription.textContent = e.target.value || "Your description here";
+        }
+      });
+    }
+
+    if (ctaInput) {
+      ctaInput.addEventListener("input", (e) => {
+        if (previewCta) {
+          previewCta.textContent = e.target.value || "Learn More";
+        }
+      });
+    }
+
+    if (brandInput) {
+      brandInput.addEventListener("input", (e) => {
+        const badge = adPreview?.querySelector(".preview-badge");
+        if (badge) {
+          badge.textContent = e.target.value ? `${e.target.value}` : "Ad";
+        }
+      });
+    }
+
+    if (logoInput && previewLogo) {
+      logoInput.addEventListener("input", (e) => {
+        const url = e.target.value.trim();
+        if (url) {
+          previewLogo.src = url;
+          previewLogo.style.display = "block";
+        } else {
+          previewLogo.src = "logo.png";
+          previewLogo.style.display = "block";
+        }
+      });
+    }
+  }
+
+  // Theme toggle buttons
+  if (themeButtons.length) {
+    themeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const theme = btn.getAttribute("data-theme");
+        if (!theme) return;
+
+        themeButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        currentTheme = theme;
+        updatePreviewTheme(theme);
+      });
+    });
+  }
+
+  function updatePreviewTheme(theme) {
+    if (!adPreview || !adPreviewWrapper) return;
+
+    // Remove both theme classes
+    adPreview.classList.remove("light", "dark");
+    adPreviewWrapper.classList.remove("light", "dark");
+
+    // Add the selected theme class
+    adPreview.classList.add(theme);
+    adPreviewWrapper.classList.add(theme);
+  }
+});
 
