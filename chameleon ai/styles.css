@@ -756,4 +756,225 @@ p {
   }
 }
 
+/* Ad Creator Section */
+.ad-creator-form {
+  padding: 1.5rem;
+}
+
+.ad-creator-form .field {
+  margin-bottom: 1rem;
+}
+
+.ad-creator-form label {
+  display: block;
+  font-size: 0.85rem;
+  color: #e5e7eb;
+  margin-bottom: 0.35rem;
+  font-weight: 500;
+}
+
+.ad-creator-form input,
+.ad-creator-form textarea {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(15, 23, 42, 0.9);
+  color: #e5e7eb;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ad-creator-form input:focus,
+.ad-creator-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(74, 222, 128, 0.2);
+}
+
+.ad-creator-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.25rem;
+}
+
+.preview-logo {
+  height: 28px;
+  width: auto;
+  margin-bottom: 0.75rem;
+  display: block;
+}
+
+.theme-selector {
+  display: inline-flex;
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.6);
+}
+
+.theme-btn {
+  background: transparent;
+  border: none;
+  padding: 0.4rem 1rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-btn.active {
+  background: var(--accent-gradient);
+  color: #022c22;
+  font-weight: 600;
+}
+
+.theme-btn:hover:not(.active) {
+  color: #e5e7eb;
+}
+
+/* Ad Preview */
+.ad-preview-container {
+  position: sticky;
+  top: 100px;
+}
+
+.ad-preview-container h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  color: #e5e7eb;
+}
+
+.ad-preview-wrapper {
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.ad-preview-wrapper.light {
+  background: #f9fafb;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.ad-preview-wrapper.dark {
+  background: #0f172a;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
+.ad-preview {
+  border-radius: 14px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.ad-preview.light {
+  background: #ffffff;
+  border: 1px solid rgba(34, 197, 94, 0.9);
+  box-shadow: 0 0 24px rgba(34, 197, 94, 0.3);
+  color: #111827;
+}
+
+.ad-preview.dark {
+  background: #1e293b;
+  border: 1px solid rgba(34, 197, 94, 0.9);
+  box-shadow: 0 0 24px rgba(34, 197, 94, 0.3);
+  color: #f1f5f9;
+}
+
+.preview-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.ad-preview.light .preview-badge {
+  background: rgba(15, 118, 110, 0.15);
+  color: #0f766e;
+}
+
+.ad-preview.dark .preview-badge {
+  background: rgba(34, 197, 94, 0.2);
+  color: #6ee7b7;
+}
+
+.preview-headline {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  line-height: 1.3;
+}
+
+.preview-description {
+  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+
+.ad-preview.light .preview-description {
+  color: #4b5563;
+}
+
+.ad-preview.dark .preview-description {
+  color: #94a3b8;
+}
+
+.preview-cta {
+  display: inline-block;
+  border-radius: 999px;
+  border: none;
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.ad-preview.light .preview-cta {
+  background: #111827;
+  color: #f9fafb;
+}
+
+.ad-preview.light .preview-cta:hover {
+  background: #1f2937;
+}
+
+.ad-preview.dark .preview-cta {
+  background: #f9fafb;
+  color: #0f172a;
+}
+
+.ad-preview.dark .preview-cta:hover {
+  background: #e2e8f0;
+}
+
+.preview-note {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+@media (max-width: 960px) {
+  .ad-preview-container {
+    position: static;
+    margin-top: 2rem;
+  }
+}
+
 
