@@ -2,489 +2,589 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Chameleon AI – MVP</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chameleon AI – Contextual Ad Camouflage Platform</title>
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
+      name="description"
+      content="Chameleon AI is a contextual ad platform that dynamically camouflages ads to match any website's native design, boosting CTR while protecting user privacy."
     />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <style>
-      :root {
-        --accent: #22c55e;
-      }
-      * {
-        box-sizing: border-box;
-      }
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont,
-          sans-serif;
-        background: #020617;
-        color: #e5e7eb;
-      }
-      body {
-        display: flex;
-        justify-content: center;
-        padding: 1.5rem;
-      }
-      .frame {
-        width: 100%;
-        max-width: 1100px;
-        border-radius: 18px;
-        border: 1px solid rgba(148, 163, 184, 0.45);
-        background: radial-gradient(circle at top left, #020617, #020617);
-        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.85);
-        padding: 1.2rem 1.4rem;
-      }
-      .top-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        font-size: 0.85rem;
-        color: #9ca3af;
-      }
-      .top-bar strong {
-        color: #e5e7eb;
-      }
-      .top-bar-left {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .mvp-logo {
-        height: 22px;
-        width: auto;
-        display: block;
-      }
-      .theme-toggle {
-        display: inline-flex;
-        gap: 0.4rem;
-        padding: 0.2rem;
-        border-radius: 999px;
-        border: 1px solid rgba(148, 163, 184, 0.6);
-        background: rgba(15, 23, 42, 0.9);
-      }
-      .theme-toggle button {
-        border: none;
-        padding: 0.3rem 0.75rem;
-        border-radius: 999px;
-        background: transparent;
-        color: #9ca3af;
-        font-size: 0.78rem;
-        cursor: pointer;
-      }
-      .theme-toggle button.active {
-        background: linear-gradient(135deg, #22c55e, #22d3ee);
-        color: #022c22;
-        font-weight: 600;
-      }
-      .layout {
-        display: grid;
-        grid-template-columns: 3fr 1.3fr;
-        gap: 1.4rem;
-      }
-      .host-shell {
-        border-radius: 14px;
-        padding: 1rem 1.1rem;
-        border: 1px solid rgba(148, 163, 184, 0.45);
-      }
-      .host-shell.light {
-        background: #f9fafb;
-        color: #111827;
-      }
-      .host-shell.light a {
-        color: #2563eb;
-      }
-      .host-shell.dark {
-        background: #020617;
-        color: #e5e7eb;
-      }
-      .host-shell.dark a {
-        color: #60a5fa;
-      }
-      .host-header {
-        font-size: 0.75rem;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        color: #9ca3af;
-        margin-bottom: 0.4rem;
-      }
-      .host-title {
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 0.4rem;
-      }
-      .host-meta {
-        font-size: 0.8rem;
-        color: #6b7280;
-        margin-bottom: 0.8rem;
-      }
-      .host-body p {
-        font-size: 0.9rem;
-        line-height: 1.5;
-        margin: 0 0 0.6rem;
-      }
-      .sidebar {
-        display: flex;
-        flex-direction: column;
-        gap: 0.8rem;
-      }
-      .sidebar-block {
-        border-radius: 14px;
-        border: 1px dashed rgba(148, 163, 184, 0.6);
-        padding: 0.75rem 0.9rem;
-        font-size: 0.8rem;
-        color: #9ca3af;
-      }
-      .sidebar-block strong {
-        display: block;
-        margin-bottom: 0.25rem;
-        color: #e5e7eb;
-      }
-      #chameleon-ad {
-        border-radius: 16px;
-        border: 1px solid rgba(34, 197, 94, 0.9);
-        padding: 0.8rem 0.95rem;
-        box-shadow: 0 0 22px rgba(34, 197, 94, 0.4);
-        font-size: 0.85rem;
-        transition: all 0.2s ease-out;
-      }
-      #chameleon-ad .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        padding: 0.15rem 0.6rem;
-        border-radius: 999px;
-        background: rgba(15, 118, 110, 0.9);
-        color: #bbf7d0;
-        margin-bottom: 0.25rem;
-      }
-      #chameleon-ad h3 {
-        font-size: 0.95rem;
-        margin: 0 0 0.25rem;
-      }
-      #chameleon-ad p {
-        margin: 0 0 0.4rem;
-      }
-      #chameleon-ad button {
-        margin-top: 0.25rem;
-        border-radius: 999px;
-        border: none;
-        padding: 0.35rem 0.85rem;
-        font-size: 0.78rem;
-        cursor: pointer;
-      }
-      .hint {
-        margin-top: 0.9rem;
-        font-size: 0.78rem;
-        color: #9ca3af;
-      }
-      /* Ad Creator Styles */
-      .ad-creator-section {
-        margin-top: 1.5rem;
-        padding: 1.25rem;
-        border-radius: 14px;
-        background: rgba(15, 23, 42, 0.6);
-        border: 1px solid rgba(148, 163, 184, 0.3);
-      }
-      .ad-creator-title {
-        font-size: 1.15rem;
-        margin: 0 0 0.5rem;
-        color: #e5e7eb;
-      }
-      .ad-creator-desc {
-        font-size: 0.85rem;
-        color: #9ca3af;
-        margin: 0 0 1rem;
-      }
-      .ad-creator-form {
-        display: flex;
-        flex-direction: column;
-        gap: 0.75rem;
-      }
-      .form-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
-      }
-      .form-field {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-      }
-      .form-field label {
-        font-size: 0.75rem;
-        color: #9ca3af;
-        font-weight: 500;
-      }
-      .form-field input,
-      .form-field textarea {
-        padding: 0.5rem 0.65rem;
-        border-radius: 8px;
-        border: 1px solid rgba(148, 163, 184, 0.5);
-        background: rgba(2, 6, 23, 0.9);
-        color: #e5e7eb;
-        font-family: inherit;
-        font-size: 0.8rem;
-      }
-      .form-field input:focus,
-      .form-field textarea:focus {
-        outline: none;
-        border-color: var(--accent);
-        box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
-      }
-      .form-field textarea {
-        resize: vertical;
-        min-height: 50px;
-      }
-      @media (max-width: 900px) {
-        .layout {
-          grid-template-columns: minmax(0, 1fr);
-        }
-        .form-row {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
   </head>
   <body>
-    <div class="frame">
-      <div class="top-bar">
-        <div class="top-bar-left">
-          <img src="logo.png" alt="Chameleon AI" class="mvp-logo" />
-          <span>
-            <strong>MVP:</strong> Chameleon AI camouflage ads to match your website's design.
-          </span>
-        </div>
-        <div class="theme-toggle" id="theme-toggle">
-          <button data-theme="light">News blog (light)</button>
-          <button data-theme="dark" class="active">Tech article (dark)</button>
-        </div>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="#top" class="logo">
+          <img src="logo.png" alt="Chameleon AI" class="logo-image" />
+        </a>
+        <nav class="nav">
+          <a href="#problem">Problem</a>
+          <a href="#solution">Solution</a>
+          <a href="#features">Features</a>
+          <a href="#benefits">Benefits</a>
+          <a href="#customers">Customers</a>
+          <a href="#competitors">Market</a>
+          <a href="#financials">Financials</a>
+          <a href="#ad-creator">Ad Creator</a>
+        </nav>
+        <a href="#contact" class="btn btn-sm btn-outline">Request Service</a>
+        <button class="nav-toggle" aria-label="Toggle navigation">
+          <span></span><span></span>
+        </button>
       </div>
+    </header>
 
-      <div class="layout">
-        <article
-          class="host-shell dark"
-          id="host-shell"
-        >
-          <div class="host-header">Sponsored context: AI &amp; programmatic</div>
-          <h1 class="host-title">
-            How contextual ads are winning the cookieless future
-          </h1>
-          <div class="host-meta">
-            By Editorial Desk · 6 min read · Brand safe · No tracking required
-          </div>
-          <div class="host-body" id="host-body">
-            <p>
-              As third‑party cookies disappear, marketers are shifting to
-              contextual signals that respect user privacy. Instead of tracking
-              people, leading platforms analyze on‑page content, sentiment, and
-              design to place relevant creatives.
+    <main>
+      <section class="hero" id="top">
+        <div class="container hero-inner">
+          <div class="hero-copy">
+            <h1>
+              Contextual ads that
+              <span class="accent">visually disappear</span><br />
+              but performance stands out.
+            </h1>
+            <p class="hero-subtitle">
+              Chameleon AI dynamically camouflages ads to match any website’s
+              native design—no cookies, no creepy tracking, just contextually
+              relevant, brand‑safe performance.
             </p>
-            <p>
-              Chameleon‑style native units don�t scream for attention. They
-              quietly blend into typography, color, and layout so that users
-              experience them as part of the story, not a distraction. The
-              result: higher click‑through rates, stronger trust, and far better
-              ROI for advertisers and publishers alike.
+            <div class="hero-actions">
+              <a href="#contact" class="btn">Book a strategy call</a>
+              <a href="#solution" class="btn btn-outline">See how it works</a>
+            </div>
+            <p class="hero-meta">
+              Built for <strong>mid‑market digital ad agencies</strong> that
+              want 2–3× higher CTR without sacrificing privacy.
             </p>
           </div>
-        </article>
-
-        <aside class="sidebar">
-          <div
-            id="chameleon-ad"
-            aria-label="Chameleon AI contextual ad"
-          >
-            <img src="logo.png" alt="Logo" class="ad-logo" id="ad-logo" style="height:24px;margin-bottom:0.5rem;display:block;" />
-            <div class="badge">Chameleon AI</div>
-            <h3>Contextual ads that blend in, not stick out.</h3>
-            <p>
-              Drop‑in script. Real‑time page analysis. Ads that automatically
-              match fonts, colors, and layout—no cookies needed.
-            </p>
-            <a href="index.html" style="display: inline-block; padding: 0.5rem 1rem; background: var(--accent); color: white; text-decoration: none; border-radius: 4px; font-weight: 500;">See how it works</a>
-          </div>
-        </aside>
-      </div>
-
-      <p class="hint">
-        Switch between <strong>News blog (light)</strong> and
-        <strong>Tech article (dark)</strong> above. The ad on the right
-        automatically restyles itself to match the host content's theme,
-        simulating Chameleon AI's visual camouflage.
-      </p>
-
-      <!-- Ad Creator Section -->
-      <div class="ad-creator-section">
-        <h2 class="ad-creator-title">Create Your Own Ad</h2>
-        <p class="ad-creator-desc">
-          Design a contextual ad that automatically adapts to match any website's 
-          native look and feel.
-        </p>
-        
-        <div class="ad-creator-form">
-          <div class="form-row">
-            <div class="form-field">
-              <label for="mvp-headline">Headline</label>
-              <input type="text" id="mvp-headline" placeholder="Your headline" value="Contextual ads that blend in, not stick out." />
-            </div>
-            <div class="form-field">
-              <label for="mvp-brand">Brand Name</label>
-              <input type="text" id="mvp-brand" placeholder="Your brand" value="Chameleon AI" />
-            </div>
-          </div>
-          <div class="form-field">
-            <label for="mvp-description">Description</label>
-            <textarea id="mvp-description" rows="2" placeholder="Describe your product...">Drop‑in script. Real‑time page analysis. Ads that automatically match fonts, colors, and layout—no cookies needed.</textarea>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="mvp-cta">CTA Button</label>
-              <input type="text" id="mvp-cta" placeholder="Button text" value="See how it works" />
-            </div>
-            <div class="form-field">
-              <label for="mvp-logo">Logo URL</label>
-              <input type="url" id="mvp-logo" placeholder="https://example.com/logo.png" />
+          <div class="hero-visual" aria-hidden="true">
+            <div class="mock-page">
+              <div class="mock-header"></div>
+              <div class="mock-body">
+                <div class="mock-content"></div>
+                <div class="mock-sidebar">
+                  <div class="mock-ad native">
+                    <span class="badge">Chameleon AI</span>
+                    <h3>Perfectly Blended Native Ad</h3>
+                    <p>Fonts, colors, and layout auto‑matched in real time.</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+      </section>
+
+      <section class="section" id="problem">
+        <div class="container two-col">
+          <div>
+            <h2>The Problem: Banner blindness is killing ad performance.</h2>
+            <p>
+              Most digital ads feel intrusive and disconnected from the content
+              users are actually consuming. Standard banners ignore the visual
+              language of each page, so users ignore them in return.
+            </p>
+            <ul class="icon-list">
+              <li>
+                <span class="dot"></span>
+                Native ads get <strong>2–3× higher CTR</strong> than banner ads,
+                which most users skip due to banner blindness.
+              </li>
+              <li>
+                <span class="dot"></span>
+                Publishers lose revenue because low‑engagement units drag down
+                yield and page RPM.
+              </li>
+              <li>
+                <span class="dot"></span>
+                Advertisers waste spend on creatives that don’t fit the
+                real‑time context or design of the host page.
+              </li>
+              <li>
+                <span class="dot"></span>
+                Users distrust intrusive, off‑brand placements that disrupt
+                their reading experience.
+              </li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Affected stakeholders</h3>
+            <ul class="tag-list">
+              <li>Publishers &amp; media houses</li>
+              <li>Mid‑market digital ad agencies</li>
+              <li>Brand &amp; PR teams</li>
+              <li>Everyday online consumers</li>
+            </ul>
+            <h4>Root causes</h4>
+            <ul class="bullet-list">
+              <li>Generic, one‑size‑fits‑all banner formats</li>
+              <li>Limited real‑time visual adaptation</li>
+              <li>Lack of aesthetic personalization</li>
+              <li>Heavy reliance on cookies and tracking</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="solution">
+        <div class="container two-col">
+          <div>
+            <h2>Our Solution: Chameleon AI</h2>
+            <p>
+              A contextual ad platform that dynamically alters ad colors,
+              fonts, and styling in real time to perfectly camouflage into the
+              host website’s layout and native content.
+            </p>
+            <p>
+              Instead of forcing a fixed banner into every placement, Chameleon
+              AI <strong>reads the page’s design, sentiment, and structure</strong> and
+              automatically re‑skins both creative and copy to feel truly
+              native—without invasive user‑level tracking.
+            </p>
+          </div>
+          <div class="pill-grid">
+            <div class="pill-card">
+              <h3>Real‑time visual camouflage</h3>
+              <p>
+                Match host fonts, colors, and spacing using AI‑driven design
+                analysis so ads visually blend into any site.
+              </p>
+            </div>
+            <div class="pill-card">
+              <h3>AI sentiment &amp; context engine</h3>
+              <p>
+                Analyze on‑page content and sentiment to adapt headlines and
+                copy while preserving brand voice and safety.
+              </p>
+            </div>
+            <div class="pill-card">
+              <h3>Seamless layout injection</h3>
+              <p>
+                Drop directly into article feeds, sidebars, or recommendation
+                units without breaking layouts or UX.
+              </p>
+            </div>
+            <div class="pill-card">
+              <h3>Analytics for agencies</h3>
+              <p>
+                A unified dashboard for CTR, viewability, sentiment, and
+                contextual performance by inventory and creative.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="container">
+          <h2>Key Features</h2>
+          <div class="grid-3">
+            <div class="card feature-card">
+              <h3>Cookieless contextual targeting</h3>
+              <p>
+                Zero‑data targeting based on live page content, semantics, and
+                tone—fully aligned with emerging privacy laws.
+              </p>
+            </div>
+            <div class="card feature-card">
+              <h3>Design‑aware rendering</h3>
+              <p>
+                Auto‑match typography scales, color palettes, and UI components
+                so every ad looks like it was designed in‑house.
+              </p>
+            </div>
+            <div class="card feature-card">
+              <h3>Brand‑safety guardrails</h3>
+              <p>
+                Go beyond keyword blocking with semantic and sentiment filters
+                to avoid negative or risky contexts.
+              </p>
+            </div>
+            <div class="card feature-card">
+              <h3>Programmatic‑ready APIs</h3>
+              <p>
+                Integrate with your existing ad stack and DSPs using simple
+                APIs built for agencies and trading desks.
+              </p>
+            </div>
+            <div class="card feature-card">
+              <h3>Self‑serve agency console</h3>
+              <p>
+                Manage campaigns, creatives, and brand‑safety rules with
+                intuitive controls and real‑time reporting.
+              </p>
+            </div>
+            <div class="card feature-card">
+              <h3>Privacy‑first architecture</h3>
+              <p>
+                No third‑party cookies, no fingerprinting—just contextual
+                intelligence powered by Python, AI, and AWS.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="benefits">
+        <div class="container two-col">
+          <div>
+            <h2>Benefits for agencies, publishers, and users</h2>
+            <div class="tabs">
+              <button class="tab active" data-tab="functional">
+                Functional
+              </button>
+              <button class="tab" data-tab="emotional">Emotional</button>
+              <button class="tab" data-tab="social">Social &amp; Macro</button>
+            </div>
+            <div class="tab-panels">
+              <div class="tab-panel active" id="tab-functional">
+                <ul class="bullet-list">
+                  <li>
+                    Boost CTR with hyper‑relevant, visually native placements.
+                  </li>
+                  <li>
+                    Achieve zero‑data targeting that works even after cookies
+                    disappear.
+                  </li>
+                  <li>
+                    Protect brands with proactive contextual and sentiment
+                    filtering.
+                  </li>
+                  <li>
+                    Increase publisher yields by replacing low‑performing
+                    banners with native units.
+                  </li>
+                </ul>
+              </div>
+              <div class="tab-panel" id="tab-emotional">
+                <ul class="bullet-list">
+                  <li>
+                    Trust that campaigns respect user privacy and regulation.
+                  </li>
+                  <li>
+                    Confidence that ads appear only in brand‑safe environments.
+                  </li>
+                  <li>
+                    Reduced anxiety about PR crises from bad placements.
+                  </li>
+                  <li>
+                    Pride in delivering non‑intrusive, elegant ad experiences.
+                  </li>
+                </ul>
+              </div>
+              <div class="tab-panel" id="tab-social">
+                <ul class="bullet-list">
+                  <li>
+                    Signal industry leadership as a privacy‑first innovator.
+                  </li>
+                  <li>
+                    Earn peer respect for adopting ethical, contextual AI.
+                  </li>
+                  <li>
+                    Help restore digital trust by eliminating creepy tracking.
+                  </li>
+                  <li>
+                    Improve economic outcomes for publishers through higher
+                    ad yield and reduced server waste.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="card persona-card" id="customers">
+            <h3>Primary customer: mid‑market ad agencies</h3>
+            <p class="persona-highlight">
+              Urban, medium‑sized digital ad agencies with high tech adoption
+              and large ad spend limits.
+            </p>
+            <p class="persona-footnote">
+              Their jobs‑to‑be‑done: ensure brand‑safe, high‑authority
+              visibility across digital channels and prove clear ROI to
+              stakeholders.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="competitors">
+        <div class="container">
+          <h2>Competitive Landscape</h2>
+          <div class="grid-3">
+            <div class="card">
+              <h3>Direct competitors</h3>
+              <ul class="bullet-list">
+                <li>Seedtag, GumGum, Illuma (contextual AI)</li>
+                <li>Omneky, AdCreative.ai (GenAI creative tools)</li>
+                <li>Outbrain, Taboola (native contextual networks)</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Indirect competitors</h3>
+              <ul class="bullet-list">
+                <li>Ad‑blockers (e.g., Brave)</li>
+                <li>First‑party CDPs (e.g., Segment)</li>
+                <li>Niche B2B influencer agencies</li>
+                <li>Platforms like Google, Meta, Amazon Ads, LinkedIn</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3>Our edge</h3>
+              <ul class="bullet-list">
+                <li>
+                  Proprietary AI that camouflages both visuals and copy in
+                  real time.
+                </li>
+                <li>
+                  Cookieless by design—no intrusive tracking or fingerprinting.
+                </li>
+                <li>
+                  Optimized for mid‑market agencies, not just tech giants.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="financials">
+        <div class="container two-col">
+          <div>
+            <h2>Business Model &amp; Financial Projection</h2>
+            <p>
+              Chameleon AI operates as a contextual ad service provider,
+              charging agencies and publishers on a SaaS + usage basis.
+            </p>
+            <p>
+              Our back‑of‑the‑envelope projections (in INR) anticipate strong,
+              scalable margins as adoption grows across mid‑market agencies.
+            </p>
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Area</th>
+                  <th>Year 1</th>
+                  <th>Year 2</th>
+                  <th>Year 3</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Revenues</td>
+                  <td>5,999,999</td>
+                  <td>16,500,000</td>
+                  <td>37,950,000</td>
+                </tr>
+                <tr>
+                  <td>Total expenses</td>
+                  <td>3,440,000</td>
+                  <td>5,244,000</td>
+                  <td>7,865,580</td>
+                </tr>
+                <tr>
+                  <td>Profit</td>
+                  <td>2,560,000</td>
+                  <td>11,256,000</td>
+                  <td>30,084,420</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Favourable macro trends</h3>
+            <ul class="bullet-list">
+              <li>
+                Cookie deprecation and stricter privacy laws create demand for
+                cookieless ad targeting.
+              </li>
+              <li>
+                Fast GenAI advancements enable real‑time, low‑cost rendering of
+                visuals and text at scale.
+              </li>
+            </ul>
+            <h3>Risks &amp; challenges</h3>
+            <ul class="bullet-list">
+              <li>
+                Economic slowdowns can reduce mid‑market B2B advertising
+                budgets.
+              </li>
+              <li>
+                Consumer distrust of AI‑generated content may require strong
+                transparency and brand controls.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="ad-creator">
+        <div class="container two-col">
+          <div>
+            <h2>Create Your Own Ad</h2>
+            <p>
+              Design a contextual ad that automatically adapts to match any website's 
+              native look and feel. Fill in the details below and see how your ad 
+              would appear in different themes.
+            </p>
+            <form class="card ad-creator-form" id="ad-creator-form">
+              <div class="field">
+                <label for="ad-headline">Headline</label>
+                <input 
+                  id="ad-headline" 
+                  type="text" 
+                  placeholder="e.g., Boost Your ROI with Native Ads" 
+                  value="Contextual ads that blend in, not stick out."
+                />
+              </div>
+              <div class="field">
+                <label for="ad-description">Description</label>
+                <textarea 
+                  id="ad-description" 
+                  rows="3" 
+                  placeholder="Describe your product or service..."
+                >Drop‑in script. Real‑time page analysis. Ads that automatically match fonts, colors, and layout—no cookies needed.</textarea>
+              </div>
+              <div class="field">
+                <label for="ad-cta">CTA Button Text</label>
+                <input 
+                  id="ad-cta" 
+                  type="text" 
+                  placeholder="e.g., Get Started" 
+                  value="See how it works"
+                />
+              </div>
+              <div class="field">
+                <label for="ad-brand">Brand Name</label>
+                <input 
+                  id="ad-brand" 
+                  type="text" 
+                  placeholder="Your company name" 
+                  value="Chameleon AI"
+                />
+              </div>
+              <div class="field">
+                <label for="ad-logo">Brand Logo URL</label>
+                <input 
+                  id="ad-logo" 
+                  type="url" 
+                  placeholder="https://example.com/logo.png"
+                />
+                <span class="field-hint">Enter a URL to your logo image</span>
+              </div>
+              <div class="field">
+                <label>Preview Theme</label>
+                <div class="theme-selector">
+                  <button type="button" class="theme-btn active" data-theme="light">Light Theme</button>
+                  <button type="button" class="theme-btn" data-theme="dark">Dark Theme</button>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="ad-preview-container">
+            <h3>Live Preview</h3>
+            <div class="ad-preview-wrapper">
+              <div class="ad-preview" id="ad-preview">
+                <img src="logo.png" alt="Logo" class="preview-logo" id="preview-logo" />
+                <div class="preview-badge">Ad</div>
+                <h3 class="preview-headline" id="preview-headline">Contextual ads that blend in, not stick out.</h3>
+                <p class="preview-description" id="preview-description">Drop‑in script. Real‑time page analysis. Ads that automatically match fonts, colors, and layout—no cookies needed.</p>
+              </div>
+            </div>
+            <p class="preview-note">
+              Your ad automatically adapts to match the host website's colors, 
+              fonts, and layout—just like the preview above.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="contact">
+        <div class="container two-col contact">
+          <div>
+            <h2>Ready to reinvent your ad experience?</h2>
+            <p>
+              Share a few details and we’ll reach out with a tailored service for
+              your campaigns and publisher stack.
+            </p>
+            <ul class="bullet-list">
+              <li>Audit your current placements and banner performance.</li>
+              <li>Identify high‑impact native and contextual opportunities.</li>
+              <li>Model the uplift from Chameleon AI on your inventory.</li>
+            </ul>
+          </div>
+          <form class="card contact-form">
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" type="text" placeholder="Your full name" />
+            </div>
+            <div class="field">
+              <label for="company">Company / Agency</label>
+              <input id="company" type="text" placeholder="Company name" />
+            </div>
+            <div class="field">
+              <label for="email">Work email</label>
+              <input
+                id="email"
+                type="email"
+                placeholder="you@agency.com"
+                required
+              />
+            </div>
+            <div class="field">
+              <label for="spend">Monthly ad spend (approx.)</label>
+              <select id="spend">
+                <option value="">Select range</option>
+                <option value="lt5">Below ₹5L</option>
+                <option value="5-25">₹5L – ₹25L</option>
+                <option value="25-100">₹25L – ₹1Cr</option>
+                <option value="gt100">Above ₹1Cr</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="message">What would you like to improve?</label>
+              <textarea
+                id="message"
+                rows="4"
+                placeholder="Share your goals around CTR, brand safety, privacy, or native formats..."
+              ></textarea>
+            </div>
+            <button type="submit" class="btn btn-full">
+              Request service
+            </button>
+            <p class="form-footnote">
+              We’ll get back within 2 business days. No spam, no sharing of your
+              data.
+            </p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <div class="logo">
+            <span class="logo-mark"></span>
+            <span class="logo-text">Chameleon<span>AI</span></span>
+          </div>
+          <p class="footer-tagline">
+            The contextual ad platform that camouflages with any website’s
+            native design.
+          </p>
+        </div>
+        <div class="footer-meta">
+          <span>&copy; <span id="year"></span> Chameleon AI. All rights reserved.</span>
+          <span>AdTech &amp; AI | Built with Python, React, SQL, and AWS.</span>
+        </div>
       </div>
-    </div>
+    </footer>
 
-    <script>
-      function applyChameleonStyles() {
-        const host = document.getElementById("host-shell");
-        const ad = document.getElementById("chameleon-ad");
-        if (!host || !ad) return;
-
-        const s = window.getComputedStyle(host);
-        const bg = s.backgroundColor;
-        const color = s.color;
-        const fontFamily = s.fontFamily;
-
-        ad.style.backgroundColor = bg;
-        ad.style.color = color;
-        ad.style.fontFamily = fontFamily;
-
-        const isLight = isLightColor(bg);
-        const button = ad.querySelector("button");
-        if (button) {
-          if (isLight) {
-            button.style.backgroundColor = "#111827";
-            button.style.color = "#f9fafb";
-          } else {
-            button.style.backgroundColor = "#f9fafb";
-            button.style.color = "#0f172a";
-          }
-        }
-      }
-
-      function isLightColor(rgb) {
-        const m = rgb.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/i);
-        if (!m) return false;
-        const r = parseInt(m[1], 10) / 255;
-        const g = parseInt(m[2], 10) / 255;
-        const b = parseInt(m[3], 10) / 255;
-        const a = [r, g, b].map((v) =>
-          v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4)
-        );
-        const luminance = 0.2126 * a[0] + 0.7152 * a[1] + 0.0722 * a[2];
-        return luminance > 0.5;
-      }
-
-      document.addEventListener("DOMContentLoaded", () => {
-        const toggle = document.getElementById("theme-toggle");
-        const host = document.getElementById("host-shell");
-        const serviceButton = document.querySelector("#chameleon-ad button");
-        if (toggle && host) {
-          toggle.addEventListener("click", (e) => {
-            const btn = e.target.closest("button[data-theme]");
-            if (!btn) return;
-            const theme = btn.getAttribute("data-theme");
-            toggle
-              .querySelectorAll("button")
-              .forEach((b) => b.classList.remove("active"));
-            btn.classList.add("active");
-            host.classList.toggle("light", theme === "light");
-            host.classList.toggle("dark", theme === "dark");
-            applyChameleonStyles();
-          });
-        }
-
-        if (serviceButton) {
-          serviceButton.addEventListener("click", () => {
-            const proceed = confirm(
-              "You are leaving the MVP and opening the main Chameleon AI service page. Continue?"
-            );
-            if (proceed) {
-              window.location.href = "index.html";
-            }
-          });
-        }
-
-        // Ad Creator form handling
-        const headlineInput = document.getElementById("mvp-headline");
-        const brandInput = document.getElementById("mvp-brand");
-        const descInput = document.getElementById("mvp-description");
-        const ctaInput = document.getElementById("mvp-cta");
-        const logoInput = document.getElementById("mvp-logo");
-        const adElement = document.getElementById("chameleon-ad");
-        const adLogo = document.getElementById("ad-logo");
-
-        if (headlineInput && adElement) {
-          headlineInput.addEventListener("input", (e) => {
-            const h3 = adElement.querySelector("h3");
-            if (h3) h3.textContent = e.target.value || "Your headline";
-          });
-        }
-
-        if (brandInput && adElement) {
-          brandInput.addEventListener("input", (e) => {
-            const badge = adElement.querySelector(".badge");
-            if (badge) badge.textContent = e.target.value || "Ad";
-          });
-        }
-
-        if (descInput && adElement) {
-          descInput.addEventListener("input", (e) => {
-            const p = adElement.querySelector("p");
-            if (p) p.textContent = e.target.value || "Your description";
-          });
-        }
-
-        if (ctaInput && adElement) {
-          ctaInput.addEventListener("input", (e) => {
-            const btn = adElement.querySelector("button");
-            if (btn) btn.textContent = e.target.value || "Learn More";
-          });
-        }
-
-        if (logoInput && adLogo) {
-          logoInput.addEventListener("input", (e) => {
-            const url = e.target.value.trim();
-            if (url) {
-              adLogo.src = url;
-              adLogo.style.display = "block";
-            } else {
-              adLogo.src = "logo.png";
-              adLogo.style.display = "block";
-            }
-          });
-        }
-
-        applyChameleonStyles();
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
 </html>
+
 
