@@ -174,9 +174,9 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Chameleon AI backend is running' });
 });
 
-// Serve index.html for root route
+// Serve mvp.html for root route
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/index.html');
+  res.sendFile(__dirname + '/mvp.html');
 });
 
 // Start server
