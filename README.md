@@ -115,8 +115,8 @@ Check server status.
 
 ```
 Chameleon-AI/
-├── index.html          # Main landing page
-├── mvp.html           # Interactive demo page
+├── index.html          # Interactive MVP demo page (default)
+├── landing.html        # Marketing/investor landing page
 ├── styles.css         # Styling and design system
 ├── script.js          # Frontend JavaScript
 ├── server.js          # Express backend server
@@ -125,6 +125,7 @@ Chameleon-AI/
 ├── .gitignore         # Git ignore rules
 ├── PRD.md            # Product Requirements Document
 ├── TODO.md           # Development tasks
+├── SETUP.md          # Setup instructions
 └── README.md         # This file
 ```
 
