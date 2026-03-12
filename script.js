@@ -44,31 +44,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const contactForm = document.querySelector(".contact-form");
   if (contactForm) {
-    contactForm.addEventListener("submit", (e) => {
+    contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
+      
+      const submitButton = contactForm.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.textContent;
+      
+      // Disable form and show loading state
+      submitButton.disabled = true;
+      submitButton.textContent = "Sending...";
+      submitButton.style.opacity = "0.7";
+
       const name = document.getElementById("name")?.value || "";
       const company = document.getElementById("company")?.value || "";
-      const workEmail = document.getElementById("email")?.value || "";
+      const email = document.getElementById("email")?.value || "";
       const spend = document.getElementById("spend")?.value || "";
       const message = document.getElementById("message")?.value || "";
 
-      const subject = encodeURIComponent("Chameleon AI – Service request");
-      const bodyLines = [
-        `Name: ${name}`,
-        `Company / Agency: ${company}`,
-        `Work email: ${workEmail}`,
-        `Monthly ad spend: ${spend || "Not specified"}`,
-        "",
-        "What they'd like to improve:",
-        message || "(No message provided)",
-      ];
-      const body = encodeURIComponent(bodyLines.join("\n"));
+      try {
+        const response = await fetch("/api/contact", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            company,
+            email,
+            spend,
+            message,
+          }),
+        });
 
-      window.location.href = `mailto:pradhanchirag03@gmail.com?subject=${subject}&body=${body}`;
+        const result = await response.json();
 
-      alert(
-        "Your email client should now open with a prefilled service request to Chameleon AI. Please review and send it to complete the request."
-      );
+        if (result.success) {
+          // Show success message
+          alert(
+            "✅ Thank you! Your service request has been submitted successfully.\n\n" +
+            "We'll get back to you within 2 business days. Check your email for a confirmation message."
+          );
+          
+          // Reset form
+          contactForm.reset();
+        } else {
+          // Show error message
+          alert(
+            "❌ " + (result.message || "Failed to send your request. Please try again or contact us directly at pradhanchirag03@gmail.com")
+          );
+        }
+      } catch (error) {
+        console.error("Error submitting form:", error);
+        alert(
+          "❌ There was an error sending your request. Please try again later or contact us directly at pradhanchirag03@gmail.com"
+        );
+      } finally {
+        // Re-enable form
+        submitButton.disabled = false;
+        submitButton.textContent = originalButtonText;
+        submitButton.style.opacity = "1";
+      }
     });
   }
 
