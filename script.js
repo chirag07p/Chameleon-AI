@@ -43,6 +43,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   const contactForm = document.querySelector(".contact-form");
+  const REQUEST_TIMEOUT_MS = 15000;
+  const isLocalPreview =
+    ["127.0.0.1", "localhost"].includes(window.location.hostname) &&
+    ["5500", "5501"].includes(window.location.port);
+  const apiBaseCandidates = window.CHAMELEON_API_BASE
+    ? [window.CHAMELEON_API_BASE]
+    : isLocalPreview
+      ? ["http://localhost:3000", "http://localhost:3001"]
+      : [""];
+
   if (contactForm) {
     contactForm.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -62,23 +72,55 @@ document.addEventListener("DOMContentLoaded", () => {
       const message = document.getElementById("message")?.value || "";
 
       try {
-        const response = await fetch("/api/contact", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            company,
-            email,
-            spend,
-            message,
-          }),
-        });
+        let response = null;
+        let responseText = "";
+        let lastError = null;
 
-        const result = await response.json();
+        for (const baseUrl of apiBaseCandidates) {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-        if (result.success) {
+          try {
+            response = await fetch(`${baseUrl}/api/contact`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              signal: controller.signal,
+              body: JSON.stringify({
+                name,
+                company,
+                email,
+                spend,
+                message,
+              }),
+            });
+
+            responseText = await response.text();
+            clearTimeout(timeoutId);
+            break;
+          } catch (error) {
+            clearTimeout(timeoutId);
+            lastError = error;
+          }
+        }
+
+        if (!response) {
+          throw lastError || new Error("Unable to reach backend API");
+        }
+
+        let result;
+
+        try {
+          result = JSON.parse(responseText);
+        } catch {
+          result = {
+            success: false,
+            message: "Server returned an invalid response."
+          };
+        }
+
+        if (response.ok && result.success) {
           // Show success message
           alert(
             "✅ Thank you! Your service request has been submitted successfully.\n\n" +
@@ -95,8 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } catch (error) {
         console.error("Error submitting form:", error);
+        const message = error?.name === "AbortError"
+          ? "Request timed out. Please ensure backend is running on localhost:3000 and try again."
+          : "There was an error sending your request. Please try again later or contact us directly at pradhanchirag03@gmail.com";
         alert(
-          "❌ There was an error sending your request. Please try again later or contact us directly at pradhanchirag03@gmail.com"
+          `❌ ${message}`
         );
       } finally {
         // Re-enable form

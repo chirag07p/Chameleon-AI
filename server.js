@@ -14,6 +14,7 @@ const emailHost = process.env.EMAIL_HOST;
 const emailPort = Number(process.env.EMAIL_PORT || 587);
 const emailSecure = String(process.env.EMAIL_SECURE || '').toLowerCase() === 'true';
 const adminEmail = process.env.ADMIN_EMAIL || 'pradhanchirag03@gmail.com';
+const emailTimeoutMs = Number(process.env.EMAIL_TIMEOUT_MS || 15000);
 
 // Middleware
 app.use(cors());
@@ -30,6 +31,9 @@ if (emailUser && emailPassword) {
         host: emailHost,
         port: emailPort,
         secure: emailSecure,
+        connectionTimeout: emailTimeoutMs,
+        greetingTimeout: emailTimeoutMs,
+        socketTimeout: emailTimeoutMs,
         auth: {
           user: emailUser,
           pass: emailPassword
@@ -37,6 +41,9 @@ if (emailUser && emailPassword) {
       }
     : {
         service: emailService || 'gmail',
+        connectionTimeout: emailTimeoutMs,
+        greetingTimeout: emailTimeoutMs,
+        socketTimeout: emailTimeoutMs,
         auth: {
           user: emailUser,
           pass: emailPassword
@@ -45,6 +52,14 @@ if (emailUser && emailPassword) {
 
   transporter = nodemailer.createTransport(transportConfig);
 }
+
+const sendMailWithTimeout = (mailOptions, timeoutMs) =>
+  Promise.race([
+    transporter.sendMail(mailOptions),
+    new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('Email send timed out')), timeoutMs);
+    })
+  ]);
 
 // Verify transporter configuration
 if (!transporter) {
@@ -187,8 +202,8 @@ app.post('/api/contact', async (req, res) => {
     };
 
     // Send both emails
-    await transporter.sendMail(adminMailOptions);
-    await transporter.sendMail(userMailOptions);
+    await sendMailWithTimeout(adminMailOptions, emailTimeoutMs);
+    await sendMailWithTimeout(userMailOptions, emailTimeoutMs);
 
     res.json({ 
       success: true, 
