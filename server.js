@@ -7,6 +7,14 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const emailUser = process.env.EMAIL_USER;
+const emailPassword = (process.env.EMAIL_PASSWORD || '').replace(/\s+/g, '');
+const emailService = process.env.EMAIL_SERVICE;
+const emailHost = process.env.EMAIL_HOST;
+const emailPort = Number(process.env.EMAIL_PORT || 587);
+const emailSecure = String(process.env.EMAIL_SECURE || '').toLowerCase() === 'true';
+const adminEmail = process.env.ADMIN_EMAIL || 'pradhanchirag03@gmail.com';
+
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
@@ -14,26 +22,53 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 // Email transporter configuration
-const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE || 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
-});
+let transporter = null;
+
+if (emailUser && emailPassword) {
+  const transportConfig = emailHost
+    ? {
+        host: emailHost,
+        port: emailPort,
+        secure: emailSecure,
+        auth: {
+          user: emailUser,
+          pass: emailPassword
+        }
+      }
+    : {
+        service: emailService || 'gmail',
+        auth: {
+          user: emailUser,
+          pass: emailPassword
+        }
+      };
+
+  transporter = nodemailer.createTransport(transportConfig);
+}
 
 // Verify transporter configuration
-transporter.verify((error, success) => {
-  if (error) {
-    console.error('Email transporter configuration error:', error);
-  } else {
-    console.log('Email server is ready to send messages');
-  }
-});
+if (!transporter) {
+  console.error('Email transporter is not configured. Set EMAIL_USER and EMAIL_PASSWORD in .env');
+} else {
+  transporter.verify((error) => {
+    if (error) {
+      console.error('Email transporter configuration error:', error.message);
+    } else {
+      console.log('Email server is ready to send messages');
+    }
+  });
+}
 
 // Contact form submission endpoint
 app.post('/api/contact', async (req, res) => {
   try {
+    if (!transporter) {
+      return res.status(503).json({
+        success: false,
+        message: 'Email service is not configured on the server. Please contact support directly at pradhanchirag03@gmail.com'
+      });
+    }
+
     const { name, company, email, spend, message } = req.body;
 
     // Validate required fields
@@ -56,8 +91,8 @@ app.post('/api/contact', async (req, res) => {
 
     // Email content for admin notification
     const adminMailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.ADMIN_EMAIL || 'pradhanchirag03@gmail.com',
+      from: emailUser,
+      to: adminEmail,
       subject: `🦎 Chameleon AI – New Service Request from ${name || 'Unknown'}`,
       html: `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
@@ -105,7 +140,7 @@ app.post('/api/contact', async (req, res) => {
 
     // Email content for user confirmation
     const userMailOptions = {
-      from: process.env.EMAIL_USER,
+      from: emailUser,
       to: email,
       subject: 'Thank you for contacting Chameleon AI!',
       html: `
