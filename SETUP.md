@@ -205,7 +205,7 @@ fetch('/api/contact', {
 - ✅ Never commit `.env` file to Git (it's in .gitignore)
 - ✅ Use environment variables for all sensitive data
 - ✅ Enable HTTPS in production
-- ✅ Use App Passwords instead of account passwords
+- ✅ Store and rotate your Resend API key securely
 - ✅ Rate limit the contact form endpoint in production
 - ✅ Add CAPTCHA for spam prevention
 
