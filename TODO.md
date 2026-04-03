@@ -3,9 +3,9 @@
 ## Plan Steps:
 
 ### 1. [x] Diagnose Issue ✅
-- Gmail auth failure (535-5.7.8). Needs App Password.
+- SMTP friction identified; migrated delivery provider to EmailJS.
 
-### 2. [x] User Actions Required ✅ (.env App Password + restart)
+### 2. [x] User Actions Required ✅ (.env EMAILJS_* keys + template IDs)
 
 ### 3. [x] Code Improvements ✅ (No changes needed - robust)
 

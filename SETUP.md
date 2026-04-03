@@ -12,38 +12,41 @@ npm install
 
 This will install:
 - express (web server)
-- resend (email functionality)
+- @emailjs/nodejs (email functionality)
 - cors (cross-origin requests)
 - dotenv (environment variables)
 - body-parser (form data parsing)
 
 ### 2. Configure Email Settings
 
-#### Option A: Using Resend (Recommended)
+#### Option A: Using EmailJS (Recommended)
 
 1. **Copy the environment template:**
    ```bash
    cp .env.example .env
    ```
 
-2. **Create a Resend account:**
-   - Go to [resend.com](https://resend.com) and sign in
+2. **Create an EmailJS account:**
+   - Go to [emailjs.com](https://www.emailjs.com) and sign in
 
-3. **Generate an API key:**
-   - Open your Resend dashboard
-   - Create a new API key with send permissions
+3. **Set up EmailJS resources:**
+   - Create one email service connection
+   - Create two templates (admin alert + user confirmation)
+   - Generate public and private keys
 
 4. **Update your `.env` file:**
    ```env
    PORT=3000
-   RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
-   EMAIL_FROM=Chameleon AI <onboarding@resend.dev>
+   EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+   EMAILJS_PRIVATE_KEY=your_emailjs_private_key
+   EMAILJS_SERVICE_ID=your_emailjs_service_id
+   EMAILJS_ADMIN_TEMPLATE_ID=your_emailjs_admin_template_id
+   EMAILJS_USER_TEMPLATE_ID=your_emailjs_user_template_id
    ADMIN_EMAIL=pradhanchirag03@gmail.com
    ```
 
    Replace:
-   - `re_xxxxxxxxxxxxxxxxxxxxxxxx` with your Resend API key
-   - `EMAIL_FROM` with your verified sender/domain in production
+   - EmailJS values with keys/IDs from your EmailJS dashboard
    - Update `ADMIN_EMAIL` if you want notifications sent elsewhere
 
 ### 3. Run the Server
@@ -78,10 +81,9 @@ The server will start at `http://localhost:3000`
 
 ### 5. Troubleshooting
 
-#### "Resend is not configured"
+#### "EmailJS is not configured"
 - Double-check your `.env` file values
-- Ensure `RESEND_API_KEY` is set correctly
-- Ensure `EMAIL_FROM` is set to a valid sender identity
+- Ensure all required `EMAILJS_*` keys/IDs are set
 
 #### Port already in use
 Change the PORT in `.env`:
@@ -99,7 +101,7 @@ app.use(cors({
 
 #### Email not sending
 - Check spam/junk folder
-- Verify `RESEND_API_KEY` and `EMAIL_FROM` in `.env`
+- Verify `EMAILJS_PUBLIC_KEY`, `EMAILJS_PRIVATE_KEY`, `EMAILJS_SERVICE_ID`, `EMAILJS_ADMIN_TEMPLATE_ID`, and `EMAILJS_USER_TEMPLATE_ID` in `.env`
 - Check server console for error messages
 
 ### 6. Deploy to Production
@@ -118,8 +120,11 @@ app.use(cors({
 
 3. Set environment variables:
    ```bash
-   heroku config:set RESEND_API_KEY=your-resend-api-key
-   heroku config:set EMAIL_FROM="Chameleon AI <onboarding@resend.dev>"
+   heroku config:set EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+   heroku config:set EMAILJS_PRIVATE_KEY=your_emailjs_private_key
+   heroku config:set EMAILJS_SERVICE_ID=your_emailjs_service_id
+   heroku config:set EMAILJS_ADMIN_TEMPLATE_ID=your_emailjs_admin_template_id
+   heroku config:set EMAILJS_USER_TEMPLATE_ID=your_emailjs_user_template_id
    heroku config:set ADMIN_EMAIL=pradhanchirag03@gmail.com
    ```
 
@@ -156,12 +161,8 @@ app.use(cors({
 
 ### 7. Email Template Customization
 
-To customize the email templates, edit the HTML in `server.js`:
-
-- **Admin notification email:** Line ~60
-- **User confirmation email:** Line ~110
-
-The emails use responsive HTML with inline CSS for maximum compatibility.
+To customize emails, edit your templates in the EmailJS dashboard.
+The backend sends template params from `email.js`.
 
 ### 8. API Usage
 
@@ -205,7 +206,7 @@ fetch('/api/contact', {
 - ✅ Never commit `.env` file to Git (it's in .gitignore)
 - ✅ Use environment variables for all sensitive data
 - ✅ Enable HTTPS in production
-- ✅ Store and rotate your Resend API key securely
+- ✅ Store and rotate your EmailJS private key securely
 - ✅ Rate limit the contact form endpoint in production
 - ✅ Add CAPTCHA for spam prevention
 

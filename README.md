@@ -19,7 +19,7 @@ A contextual ad platform that dynamically camouflages ads to match any website's
 
 ### Backend
 - Node.js + Express.js
-- Resend for transactional email delivery
+- EmailJS for transactional email delivery
 - CORS enabled for cross-origin requests
 - Environment-based configuration
 
@@ -27,7 +27,7 @@ A contextual ad platform that dynamically camouflages ads to match any website's
 
 ### Prerequisites
 - Node.js (v16 or higher)
-- Resend account and API key
+- EmailJS account (service + templates + keys)
 
 ### Installation
 
@@ -49,17 +49,20 @@ cp .env.example .env
 
 4. Edit `.env` and add your email credentials:
 ```env
-RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
-EMAIL_FROM=Chameleon AI <onboarding@resend.dev>
+EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+EMAILJS_PRIVATE_KEY=your_emailjs_private_key
+EMAILJS_SERVICE_ID=your_emailjs_service_id
+EMAILJS_ADMIN_TEMPLATE_ID=your_emailjs_admin_template_id
+EMAILJS_USER_TEMPLATE_ID=your_emailjs_user_template_id
 ADMIN_EMAIL=pradhanchirag03@gmail.com
 ```
 
-### Setting up Resend
+### Setting up EmailJS
 
-1. Create an account at [resend.com](https://resend.com)
-2. Generate an API key from the Resend dashboard
-3. Add `RESEND_API_KEY` to your `.env`
-4. Set `EMAIL_FROM` to a Resend-verified sender (use `onboarding@resend.dev` for testing)
+1. Create an account at [emailjs.com](https://www.emailjs.com)
+2. Create one email service connection in EmailJS
+3. Create two templates: one for admin alerts and one for user confirmation
+4. Add `EMAILJS_PUBLIC_KEY`, `EMAILJS_PRIVATE_KEY`, `EMAILJS_SERVICE_ID`, `EMAILJS_ADMIN_TEMPLATE_ID`, and `EMAILJS_USER_TEMPLATE_ID` to your `.env`
 
 ### Running the Application
 
@@ -154,8 +157,11 @@ When a user submits the contact form:
 ### Deploy to Heroku
 ```bash
 heroku create chameleon-ai
-heroku config:set RESEND_API_KEY=your-resend-api-key
-heroku config:set EMAIL_FROM="Chameleon AI <onboarding@resend.dev>"
+heroku config:set EMAILJS_PUBLIC_KEY=your_emailjs_public_key
+heroku config:set EMAILJS_PRIVATE_KEY=your_emailjs_private_key
+heroku config:set EMAILJS_SERVICE_ID=your_emailjs_service_id
+heroku config:set EMAILJS_ADMIN_TEMPLATE_ID=your_emailjs_admin_template_id
+heroku config:set EMAILJS_USER_TEMPLATE_ID=your_emailjs_user_template_id
 heroku config:set ADMIN_EMAIL=admin@yourdomain.com
 git push heroku main
 ```

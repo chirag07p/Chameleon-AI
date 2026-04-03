@@ -45,12 +45,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const contactForm = document.querySelector(".contact-form");
   const REQUEST_TIMEOUT_MS = 15000;
   const isLocalPreview =
-    ["127.0.0.1", "localhost"].includes(window.location.hostname) &&
-    ["5500", "5501"].includes(window.location.port);
+    ["127.0.0.1", "localhost", ""].includes(window.location.hostname);
   const apiBaseCandidates = window.CHAMELEON_API_BASE
     ? [window.CHAMELEON_API_BASE]
     : isLocalPreview
-      ? ["http://localhost:3000", "http://localhost:3001"]
+      ? ["http://localhost:3002", "http://localhost:3000", "http://localhost:3001"]
       : [""];
 
   if (contactForm) {
@@ -72,76 +71,61 @@ document.addEventListener("DOMContentLoaded", () => {
       const message = document.getElementById("message")?.value || "";
 
       try {
-        let response = null;
-        let responseText = "";
-        let lastError = null;
+        const adminEmail = "pradhanchirag03@gmail.com";
+        const emailJsServiceId = "service_xc8ajbl";
+        const adminTemplateId = "template_kb7hnyr";
+        const userTemplateId = "template_muh29fa";
 
-        for (const baseUrl of apiBaseCandidates) {
-          const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+        const spendMap = {
+          lt5: 'Below INR 5L',
+          '5-25': 'INR 5L - INR 25L',
+          '25-100': 'INR 25L - INR 1Cr',
+          gt100: 'Above INR 1Cr'
+        };
+        const spendText = spendMap[spend] || 'Not specified';
+        const submittedAt = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
-          try {
-            response = await fetch(`${baseUrl}/api/contact`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              signal: controller.signal,
-              body: JSON.stringify({
-                name,
-                company,
-                email,
-                spend,
-                message,
-              }),
-            });
+        const adminParams = {
+          admin_email: adminEmail,
+          user_email: email,
+          name: name || 'Not provided',
+          company: company || 'Not provided',
+          email: email,
+          spend: spendText,
+          message: message || 'No specific goals mentioned',
+          submitted_at: `${submittedAt} IST`
+        };
 
-            responseText = await response.text();
-            clearTimeout(timeoutId);
-            break;
-          } catch (error) {
-            clearTimeout(timeoutId);
-            lastError = error;
-          }
-        }
+        const userParams = {
+          user_email: email,
+          name: name || 'there',
+          email: email,
+          spend: spendText,
+          message: message || 'General inquiry'
+        };
 
-        if (!response) {
-          throw lastError || new Error("Unable to reach backend API");
-        }
+        // Send to Admin
+        await emailjs.send(emailJsServiceId, adminTemplateId, adminParams);
+        
+        // Send to User
+        await emailjs.send(emailJsServiceId, userTemplateId, userParams);
 
-        let result;
-
-        try {
-          result = JSON.parse(responseText);
-        } catch {
-          result = {
-            success: false,
-            message: "Server returned an invalid response."
-          };
-        }
-
-        if (response.ok && result.success) {
-          // Show success message
-          alert(
-            "✅ Thank you! Your service request has been submitted successfully.\n\n" +
-            "We'll get back to you within 2 business days. Check your email for a confirmation message."
-          );
-          
-          // Reset form
-          contactForm.reset();
-        } else {
-          // Show error message
-          alert(
-            "❌ " + (result.message || "Failed to send your request. Please try again or contact us directly at pradhanchirag03@gmail.com")
-          );
-        }
-      } catch (error) {
-        console.error("Error submitting form:", error);
-        const message = error?.name === "AbortError"
-          ? "Request timed out. Please ensure backend is running on localhost:3000 and try again."
-          : "There was an error sending your request. Please try again later or contact us directly at pradhanchirag03@gmail.com";
+        // Show success message
         alert(
-          `❌ ${message}`
+          "✅ Thank you! Your service request has been submitted successfully.\n\n" +
+          "We'll get back to you within 2 business days. Check your email for a confirmation message."
+        );
+        
+        // Reset form
+        contactForm.reset();
+
+      } catch (error) {
+        console.error("Error submitting form via EmailJS:", error);
+        
+        let errorReason = error.text || error.message || "Unknown error";
+        
+        alert(
+          "❌ EmailJS Error: \n\n" + errorReason + "\n\nPlease check your EmailJS Template's 'To Email' field!"
         );
       } finally {
         // Re-enable form
