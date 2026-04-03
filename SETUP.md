@@ -12,69 +12,39 @@ npm install
 
 This will install:
 - express (web server)
-- nodemailer (email functionality)
+- resend (email functionality)
 - cors (cross-origin requests)
 - dotenv (environment variables)
 - body-parser (form data parsing)
 
 ### 2. Configure Email Settings
 
-#### Option A: Using Gmail (Recommended for development)
+#### Option A: Using Resend (Recommended)
 
 1. **Copy the environment template:**
    ```bash
    cp .env.example .env
    ```
 
-2. **Enable 2-Step Verification on your Gmail account:**
-   - Go to [Google Account Security](https://myaccount.google.com/security)
-   - Click on "2-Step Verification" and follow the setup
+2. **Create a Resend account:**
+   - Go to [resend.com](https://resend.com) and sign in
 
-3. **Generate an App Password:**
-   - Go to [App Passwords](https://myaccount.google.com/apppasswords)
-   - Select "Mail" and "Windows Computer" (or "Other")
-   - Click "Generate"
-   - Copy the 16-character password (format: xxxx xxxx xxxx xxxx)
+3. **Generate an API key:**
+   - Open your Resend dashboard
+   - Create a new API key with send permissions
 
 4. **Update your `.env` file:**
    ```env
    PORT=3000
-   EMAIL_SERVICE=gmail
-   EMAIL_USER=your-email@gmail.com
-   EMAIL_PASSWORD=xxxx xxxx xxxx xxxx
+   RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
+   EMAIL_FROM=Chameleon AI <onboarding@resend.dev>
    ADMIN_EMAIL=pradhanchirag03@gmail.com
    ```
 
    Replace:
-   - `your-email@gmail.com` with your Gmail address
-   - `xxxx xxxx xxxx xxxx` with the App Password you generated
+   - `re_xxxxxxxxxxxxxxxxxxxxxxxx` with your Resend API key
+   - `EMAIL_FROM` with your verified sender/domain in production
    - Update `ADMIN_EMAIL` if you want notifications sent elsewhere
-
-#### Option B: Using Other Email Services
-
-You can use other email providers by changing the `EMAIL_SERVICE` in `.env`:
-
-**Outlook/Hotmail:**
-```env
-EMAIL_SERVICE=hotmail
-EMAIL_USER=your-email@outlook.com
-EMAIL_PASSWORD=your-password
-```
-
-**Yahoo:**
-```env
-EMAIL_SERVICE=yahoo
-EMAIL_USER=your-email@yahoo.com
-EMAIL_PASSWORD=your-app-password
-```
-
-**Custom SMTP:**
-```env
-EMAIL_HOST=smtp.yourprovider.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@domain.com
-EMAIL_PASSWORD=your-password
-```
 
 ### 3. Run the Server
 
@@ -108,10 +78,10 @@ The server will start at `http://localhost:3000`
 
 ### 5. Troubleshooting
 
-#### "Email transporter configuration error"
-- Double-check your `.env` file credentials
-- Make sure you generated an App Password (not your regular password)
-- Verify 2-Step Verification is enabled on your Google account
+#### "Resend is not configured"
+- Double-check your `.env` file values
+- Ensure `RESEND_API_KEY` is set correctly
+- Ensure `EMAIL_FROM` is set to a valid sender identity
 
 #### Port already in use
 Change the PORT in `.env`:
@@ -129,12 +99,8 @@ app.use(cors({
 
 #### Email not sending
 - Check spam/junk folder
-- Verify the email credentials in `.env`
+- Verify `RESEND_API_KEY` and `EMAIL_FROM` in `.env`
 - Check server console for error messages
-- Test your email config with:
-  ```bash
-  npm run test-email
-  ```
 
 ### 6. Deploy to Production
 
@@ -152,8 +118,8 @@ app.use(cors({
 
 3. Set environment variables:
    ```bash
-   heroku config:set EMAIL_USER=your-email@gmail.com
-   heroku config:set EMAIL_PASSWORD=your-app-password
+   heroku config:set RESEND_API_KEY=your-resend-api-key
+   heroku config:set EMAIL_FROM="Chameleon AI <onboarding@resend.dev>"
    heroku config:set ADMIN_EMAIL=pradhanchirag03@gmail.com
    ```
 

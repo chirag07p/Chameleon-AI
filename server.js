@@ -1,18 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const emailUser = process.env.EMAIL_USER;
-const emailPassword = (process.env.EMAIL_PASSWORD || '').replace(/\s+/g, '');
-const emailService = process.env.EMAIL_SERVICE;
-const emailHost = process.env.EMAIL_HOST;
-const emailPort = Number(process.env.EMAIL_PORT || 587);
-const emailSecure = String(process.env.EMAIL_SECURE || '').toLowerCase() === 'true';
+const resendApiKey = process.env.RESEND_API_KEY;
+const emailFrom = process.env.EMAIL_FROM;
 const adminEmail = process.env.ADMIN_EMAIL || 'pradhanchirag03@gmail.com';
 const emailTimeoutMs = Number(process.env.EMAIL_TIMEOUT_MS || 15000);
 
@@ -22,62 +18,35 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
-// Email transporter configuration
-let transporter = null;
+// Resend client configuration
+const resendClient = resendApiKey ? new Resend(resendApiKey) : null;
 
-if (emailUser && emailPassword) {
-  const transportConfig = emailHost
-    ? {
-        host: emailHost,
-        port: emailPort,
-        secure: emailSecure,
-        connectionTimeout: emailTimeoutMs,
-        greetingTimeout: emailTimeoutMs,
-        socketTimeout: emailTimeoutMs,
-        auth: {
-          user: emailUser,
-          pass: emailPassword
-        }
-      }
-    : {
-        service: emailService || 'gmail',
-        connectionTimeout: emailTimeoutMs,
-        greetingTimeout: emailTimeoutMs,
-        socketTimeout: emailTimeoutMs,
-        auth: {
-          user: emailUser,
-          pass: emailPassword
-        }
-      };
-
-  transporter = nodemailer.createTransport(transportConfig);
-}
-
-const sendMailWithTimeout = (mailOptions, timeoutMs) =>
-  Promise.race([
-    transporter.sendMail(mailOptions),
+const sendMailWithTimeout = async (mailOptions, timeoutMs) => {
+  const result = await Promise.race([
+    resendClient.emails.send(mailOptions),
     new Promise((_, reject) => {
       setTimeout(() => reject(new Error('Email send timed out')), timeoutMs);
     })
   ]);
 
-// Verify transporter configuration
-if (!transporter) {
-  console.error('Email transporter is not configured. Set EMAIL_USER and EMAIL_PASSWORD in .env');
+  if (result && result.error) {
+    throw new Error(result.error.message || 'Failed to send email via Resend');
+  }
+
+  return result;
+};
+
+// Verify Resend configuration
+if (!resendClient || !emailFrom) {
+  console.error('Resend is not configured. Set RESEND_API_KEY and EMAIL_FROM in .env');
 } else {
-  transporter.verify((error) => {
-    if (error) {
-      console.error('Email transporter configuration error:', error.message);
-    } else {
-      console.log('Email server is ready to send messages');
-    }
-  });
+  console.log('Resend client is configured and ready to send messages');
 }
 
 // Contact form submission endpoint
 app.post('/api/contact', async (req, res) => {
   try {
-    if (!transporter) {
+    if (!resendClient || !emailFrom) {
       return res.status(503).json({
         success: false,
         message: 'Email service is not configured on the server. Please contact support directly at pradhanchirag03@gmail.com'
@@ -106,8 +75,9 @@ app.post('/api/contact', async (req, res) => {
 
     // Email content for admin notification
     const adminMailOptions = {
-      from: emailUser,
+      from: emailFrom,
       to: adminEmail,
+      reply_to: email,
       subject: `🦎 Chameleon AI – New Service Request from ${name || 'Unknown'}`,
       html: `
         <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
@@ -155,7 +125,7 @@ app.post('/api/contact', async (req, res) => {
 
     // Email content for user confirmation
     const userMailOptions = {
-      from: emailUser,
+      from: emailFrom,
       to: email,
       subject: 'Thank you for contacting Chameleon AI!',
       html: `

@@ -19,7 +19,7 @@ A contextual ad platform that dynamically camouflages ads to match any website's
 
 ### Backend
 - Node.js + Express.js
-- Nodemailer for email functionality
+- Resend for transactional email delivery
 - CORS enabled for cross-origin requests
 - Environment-based configuration
 
@@ -27,7 +27,7 @@ A contextual ad platform that dynamically camouflages ads to match any website's
 
 ### Prerequisites
 - Node.js (v16 or higher)
-- Gmail account with App Password enabled
+- Resend account and API key
 
 ### Installation
 
@@ -49,18 +49,17 @@ cp .env.example .env
 
 4. Edit `.env` and add your email credentials:
 ```env
-EMAIL_USER=your-email@gmail.com
-EMAIL_PASSWORD=your-app-specific-password
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxx
+EMAIL_FROM=Chameleon AI <onboarding@resend.dev>
 ADMIN_EMAIL=pradhanchirag03@gmail.com
 ```
 
-### Setting up Gmail App Password
+### Setting up Resend
 
-1. Go to your [Google Account Security settings](https://myaccount.google.com/security)
-2. Enable **2-Step Verification** if not already enabled
-3. Navigate to **App passwords**
-4. Generate a new app password for "Mail"
-5. Copy the 16-character password and use it in your `.env` file
+1. Create an account at [resend.com](https://resend.com)
+2. Generate an API key from the Resend dashboard
+3. Add `RESEND_API_KEY` to your `.env`
+4. Set `EMAIL_FROM` to a Resend-verified sender (use `onboarding@resend.dev` for testing)
 
 ### Running the Application
 
@@ -155,8 +154,8 @@ When a user submits the contact form:
 ### Deploy to Heroku
 ```bash
 heroku create chameleon-ai
-heroku config:set EMAIL_USER=your-email@gmail.com
-heroku config:set EMAIL_PASSWORD=your-app-password
+heroku config:set RESEND_API_KEY=your-resend-api-key
+heroku config:set EMAIL_FROM="Chameleon AI <onboarding@resend.dev>"
 heroku config:set ADMIN_EMAIL=admin@yourdomain.com
 git push heroku main
 ```
